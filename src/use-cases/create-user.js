@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { PostgresCreateUserRepository } from "../repositories/postgres/create-user.js";
 import { PostgresGetUserByEmailRepository } from "../repositories/postgres/get-user-by-email.js";
+import { EmailAlreadyInUseError } from "../controllers/errors/user.js";
 
 export class CreateUserUseCase {
     async execute(createUserParams) {
@@ -11,7 +12,7 @@ export class CreateUserUseCase {
         const userExists = await postgresGetUserByEmailRepository.execute(createUserParams.email);
 
         if(userExists) {
-            throw new Error('User already exists');
+            throw new EmailAlreadyInUseError(createUserParams.email);
         }
 
         const passwordHash = await bcrypt.hash(createUserParams.password, 10);
