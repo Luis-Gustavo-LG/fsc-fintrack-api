@@ -9,7 +9,7 @@ export class CreateUserController {
         try {
             const params = request.body;
 
-            const requiredFields = ['first_name', 'last_name', 'email', 'password'];
+            const requiredFields = ['firstName', 'lastName', 'email', 'password'];
 
             for (const field of requiredFields) {
                 if (!params[field] || params[field].trim().length === 0) {

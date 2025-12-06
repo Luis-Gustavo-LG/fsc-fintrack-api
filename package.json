@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "fintrack api",
   "license": "ISC",
-  "author": "",
+  "author": "Luis Gustavo",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
