@@ -13,11 +13,11 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(uuid())
-  firstName String
-  lastName String
-  email String @unique
-  password String
+  id           String        @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String        @unique
+  password     String
   transactions Transaction[]
 }
 
@@ -28,11 +28,11 @@ enum TransactionType {
 }
 
 model Transaction {
-  id String @id @default(uuid())
-  type TransactionType @default(EARNING)
-  name String
+  id            String          @id @default(uuid())
+  type          TransactionType @default(EARNING)
+  name          String
   amountInCents Int
-  date DateTime @default(now())
-  userId String
-  user User @relation(fields: [userId], references: [id])
+  date          DateTime        @default(now())
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
 }
