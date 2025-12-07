@@ -1,7 +1,14 @@
 import { CreateUserUseCase } from "../use-cases/create-user.js";
-import validator from "validator";
-import { badRequest, serverError, created } from "./helpers.js";
+import { serverError, created } from "./helpers/http.js";
 import { EmailAlreadyInUseError } from "./errors/user.js";
+import { 
+    InvalidEmailResponse, 
+    EmailIsAlreadyInUseResponse, 
+    InvalidUserIdResponse, 
+    InvalidPasswordResponse,
+    checkIfPasswordIsValid,
+    checkIfEmailIsValid 
+} from "./helpers/user.js";
 
 export class CreateUserController {
     constructor() {
@@ -16,16 +23,16 @@ export class CreateUserController {
 
             for (const field of requiredFields) {
                 if (!params[field] || params[field].trim().length === 0) {
-                    return badRequest(response, { message: `Missing required field: ${field}` });
+                    return InvalidUserIdResponse(response);
                 }
             }
 
-            if(params.password.length < 6) {
-                return badRequest(response, { message: 'Password must be at least 6 characters long' });
+            if(checkIfPasswordIsValid(params.password)) {
+                return InvalidPasswordResponse(response);
             }
 
-            if(!validator.isEmail(params.email)) {
-                return badRequest(response, { message: 'Invalid email format' });
+            if(checkIfEmailIsValid(params.email)) {
+                return InvalidEmailResponse(response);
             }
 
             const createUserUseCase = new CreateUserUseCase();
@@ -36,7 +43,7 @@ export class CreateUserController {
 
         } catch (error) {
             if(error instanceof EmailAlreadyInUseError) {
-                return badRequest(response, { message: error.message });
+                return EmailIsAlreadyInUseResponse(response);
             }
             return serverError(response, { message: error.message });
         }

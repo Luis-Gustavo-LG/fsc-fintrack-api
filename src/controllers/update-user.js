@@ -1,7 +1,12 @@
-import { badRequest, serverError, success } from "./helpers.js";
-import validator from "validator";
+import { badRequest, serverError, success } from "./helpers/http.js";
 import { UpdateUserUseCase } from "../use-cases/update-user.js";
 import { EmailAlreadyInUseError } from "./errors/user.js";
+import { checkIfPasswordIsValid, 
+    checkIfEmailIsValid, 
+    InvalidPasswordResponse, 
+    InvalidEmailResponse, 
+    InvalidUserIdResponse 
+} from "./helpers/user.js";
 
 export class UpdateUserController {
     constructor() {
@@ -14,7 +19,7 @@ export class UpdateUserController {
             const id = request.params.id;
 
             if (!id) {
-                return badRequest(response, { message: 'Invalid user ID' });
+                return InvalidUserIdResponse(response);
             }
 
             const allowedFields = ['firstName', 'lastName', 'email', 'password'];
@@ -40,14 +45,14 @@ export class UpdateUserController {
             }
 
             if(updateUserParams.password) {
-                if(updateUserParams.password.length < 6) {
-                    return badRequest(response, { message: 'Password must be at least 6 characters long' });
+                if(checkIfPasswordIsValid(updateUserParams.password)) {
+                    return InvalidPasswordResponse(response);
                 }
             }
 
             if(updateUserParams.email) {
-                if(!validator.isEmail(updateUserParams.email)) {
-                    return badRequest(response, { message: 'Invalid email format' });
+                if(checkIfEmailIsValid(updateUserParams.email)) {
+                    return InvalidEmailResponse(response);
                 }
             }
 
@@ -58,7 +63,7 @@ export class UpdateUserController {
             return success(response, updatedUser);
         } catch (error) {
             if(error instanceof EmailAlreadyInUseError) {
-                return badRequest(response, { message: error.message });
+                return EmailIsAlreadyInUseResponse(response);
             }
             return serverError(response, { message: error.message });
         }
