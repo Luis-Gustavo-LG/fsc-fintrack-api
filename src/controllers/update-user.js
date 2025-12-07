@@ -1,0 +1,66 @@
+import { badRequest, serverError, success } from "./helpers.js";
+import validator from "validator";
+import { UpdateUserUseCase } from "../use-cases/update-user.js";
+import { EmailAlreadyInUseError } from "./errors/user.js";
+
+export class UpdateUserController {
+    constructor() {
+        this.execute = this.execute.bind(this);
+    }
+    
+    async execute(request, response) {
+        try {
+            const updateUserParams = request.body
+            const id = request.params.id;
+
+            if (!id) {
+                return badRequest(response, { message: 'Invalid user ID' });
+            }
+
+            const allowedFields = ['firstName', 'lastName', 'email', 'password'];
+
+            const someFieldIsNotAllowed = Object.keys(updateUserParams).some(
+                (field) => !allowedFields.includes(field)
+            )
+
+            const someFieldIsBlank = Object.values(updateUserParams).some((value) => {
+                return (
+                    value === undefined ||
+                    value === null ||
+                    (typeof value === 'string' && value.trim().length === 0)
+                );
+            });
+
+            if(someFieldIsBlank) {
+                return badRequest(response, { message: 'Some provided fields are blank' });
+            }
+
+            if(someFieldIsNotAllowed) {
+                return badRequest(response, { message: 'Some provided fields are not allowed' });
+            }
+
+            if(updateUserParams.password) {
+                if(updateUserParams.password.length < 6) {
+                    return badRequest(response, { message: 'Password must be at least 6 characters long' });
+                }
+            }
+
+            if(updateUserParams.email) {
+                if(!validator.isEmail(updateUserParams.email)) {
+                    return badRequest(response, { message: 'Invalid email format' });
+                }
+            }
+
+            const updateUserUseCase = new UpdateUserUseCase();
+
+            const updatedUser = await updateUserUseCase.execute(id, updateUserParams);
+
+            return success(response, updatedUser);
+        } catch (error) {
+            if(error instanceof EmailAlreadyInUseError) {
+                return badRequest(response, { message: error.message });
+            }
+            return serverError(response, { message: error.message });
+        }
+    }
+}
