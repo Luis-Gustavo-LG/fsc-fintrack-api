@@ -1,4 +1,4 @@
-import { UpdateUserUseCase } from "../use-cases/update-user.js";
+import { UpdateUserUseCase } from "../use-cases/index.js";
 import { EmailAlreadyInUseError } from "./errors/user.js";
 import { checkIfPasswordIsValid, 
     checkIfEmailIsValid, 
@@ -8,6 +8,7 @@ import { checkIfPasswordIsValid,
     success,
     serverError,
     badRequest,
+    checkIfUserIdIsValid
 } from "./helpers/index.js";
 
 export class UpdateUserController {
@@ -18,9 +19,13 @@ export class UpdateUserController {
     async execute(request, response) {
         try {
             const updateUserParams = request.body
-            const id = request.params.id;
+            const userId = request.params.id;
 
-            if (!id) {
+            if (!userId) {
+                return InvalidUserIdResponse(response);
+            }
+
+            if(checkIfUserIdIsValid(userId)) {
                 return InvalidUserIdResponse(response);
             }
 
@@ -60,7 +65,7 @@ export class UpdateUserController {
 
             const updateUserUseCase = new UpdateUserUseCase();
 
-            const updatedUser = await updateUserUseCase.execute(id, updateUserParams);
+            const updatedUser = await updateUserUseCase.execute(userId, updateUserParams);
 
             return success(response, updatedUser);
         } catch (error) {

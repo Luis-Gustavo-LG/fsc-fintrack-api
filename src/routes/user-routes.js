@@ -1,17 +1,21 @@
 import { Router } from "express";
-import { CreateUserController } from "../controllers/create-user.js";
-import { GetUserByIdController } from "../controllers/get-user-by-id.js";
-import { UpdateUserController } from "../controllers/update-user.js";
+import { CreateUserController,
+    GetUserByIdController,
+    UpdateUserController,
+    DeleteUserController 
+} from "../controllers/index.js";
 
 const router = Router();
 
 const createUserController = new CreateUserController();
 const getUserByIdController = new GetUserByIdController();
 const updateUserController = new UpdateUserController();
+const deleteUserController = new DeleteUserController();
 
 router.post('/', createUserController.execute);
 router.get('/:id', getUserByIdController.execute);
 router.patch('/:id', updateUserController.execute);
+router.delete('/:id', deleteUserController.execute);
 
 export default router;
 

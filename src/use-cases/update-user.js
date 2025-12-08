@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import { EmailAlreadyInUseError } from "../controllers/errors/user.js";
-import { PostgresGetUserByEmailRepository } from "../repositories/postgres/get-user-by-email.js";
-import { PostgresUpdateUserRepository } from "../repositories/postgres/update.user.js";
+import { PostgresGetUserByEmailRepository,
+    PostgresUpdateUserRepository 
+} from "../repositories/postgres/index.js";
 
 export class UpdateUserUseCase {
     async execute(userId, updateUserParams) {
