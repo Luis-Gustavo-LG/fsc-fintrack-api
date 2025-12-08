@@ -1,10 +1,8 @@
-import { GetUserByIdUseCase } from "../use-cases/index.js";
 import { notFound, serverError, success, InvalidUserIdResponse, checkIfUserIdIsValid } from "./helpers/index.js";
-
 export class GetUserByIdController {
-    constructor() {
+    constructor(useCase) {
         this.execute = this.execute.bind(this);
-        this.getUserByIdUseCase = new GetUserByIdUseCase();
+        this.useCase = useCase;
     }
     
     async execute(request, response) {
@@ -19,7 +17,7 @@ export class GetUserByIdController {
                 return InvalidUserIdResponse(response);
             }
 
-            const user = await this.getUserByIdUseCase.execute(userId);
+            const user = await this.useCase.execute(userId);
 
             if(!user) {
                 return notFound(response, { message: 'User not found' });

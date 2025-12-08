@@ -1,4 +1,3 @@
-import { UpdateUserUseCase } from "../use-cases/index.js";
 import { EmailAlreadyInUseError } from "./errors/user.js";
 import { checkIfPasswordIsValid, 
     checkIfEmailIsValid, 
@@ -12,9 +11,9 @@ import { checkIfPasswordIsValid,
 } from "./helpers/index.js";
 
 export class UpdateUserController {
-    constructor() {
+    constructor(useCase) {
         this.execute = this.execute.bind(this);
-        this.updateUserUseCase = new UpdateUserUseCase();
+        this.useCase = useCase;
     }
     
     async execute(request, response) {
@@ -64,7 +63,7 @@ export class UpdateUserController {
                 }
             }
 
-            const updatedUser = await this.updateUserUseCase.execute(userId, updateUserParams);
+            const updatedUser = await this.useCase.execute(userId, updateUserParams);
 
             return success(response, updatedUser);
         } catch (error) {

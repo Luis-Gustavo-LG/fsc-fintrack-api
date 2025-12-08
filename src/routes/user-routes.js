@@ -1,18 +1,49 @@
 import { Router } from "express";
-import { CreateUserController,
+
+import { 
+    CreateUserController,
     GetUserByIdController,
     UpdateUserController,
     DeleteUserController 
 } from "../controllers/index.js";
 
+import { 
+    GetUserByIdUseCase,
+    CreateUserUseCase,
+    UpdateUserUseCase,
+    DeleteUserUseCase 
+} from "../use-cases/index.js";
+
+import { 
+    PostgresGetUserByIdRepository,
+    PostgresCreateUserRepository,
+    PostgresUpdateUserRepository,
+    PostgresDeleteUserRepository,
+    PostgresGetUserByEmailRepository
+} from "../repositories/postgres/index.js";
+
 export class UserRoutes {
     constructor() {
         this.router = Router();
 
-        this.createUserController = new CreateUserController();
-        this.getUserByIdController = new GetUserByIdController();
-        this.updateUserController = new UpdateUserController();
-        this.deleteUserController = new DeleteUserController();
+        // --- REPOSITORIES ---
+        const getUserByIdRepository = new PostgresGetUserByIdRepository();
+        const createUserRepository = new PostgresCreateUserRepository();
+        const updateUserRepository = new PostgresUpdateUserRepository();
+        const deleteUserRepository = new PostgresDeleteUserRepository();
+        const getUserByEmailRepository = new PostgresGetUserByEmailRepository();
+
+        // --- USE CASES ---
+        const getUserByIdUseCase = new GetUserByIdUseCase(getUserByIdRepository);
+        const createUserUseCase = new CreateUserUseCase(createUserRepository, getUserByEmailRepository);
+        const updateUserUseCase = new UpdateUserUseCase(updateUserRepository, getUserByEmailRepository);
+        const deleteUserUseCase = new DeleteUserUseCase(deleteUserRepository);
+
+        // --- CONTROLLERS ---
+        this.getUserByIdController = new GetUserByIdController(getUserByIdUseCase);
+        this.createUserController = new CreateUserController(createUserUseCase);
+        this.updateUserController = new UpdateUserController(updateUserUseCase);
+        this.deleteUserController = new DeleteUserController(deleteUserUseCase);
 
         this.setupRoutes();
     }
@@ -28,4 +59,3 @@ export class UserRoutes {
         return this.router;
     }
 }
-
