@@ -14,6 +14,7 @@ import { checkIfPasswordIsValid,
 export class UpdateUserController {
     constructor() {
         this.execute = this.execute.bind(this);
+        this.updateUserUseCase = new UpdateUserUseCase();
     }
     
     async execute(request, response) {
@@ -63,9 +64,7 @@ export class UpdateUserController {
                 }
             }
 
-            const updateUserUseCase = new UpdateUserUseCase();
-
-            const updatedUser = await updateUserUseCase.execute(userId, updateUserParams);
+            const updatedUser = await this.updateUserUseCase.execute(userId, updateUserParams);
 
             return success(response, updatedUser);
         } catch (error) {

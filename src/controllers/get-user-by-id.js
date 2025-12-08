@@ -4,6 +4,7 @@ import { notFound, serverError, success, InvalidUserIdResponse, checkIfUserIdIsV
 export class GetUserByIdController {
     constructor() {
         this.execute = this.execute.bind(this);
+        this.getUserByIdUseCase = new GetUserByIdUseCase();
     }
     
     async execute(request, response) {
@@ -18,9 +19,7 @@ export class GetUserByIdController {
                 return InvalidUserIdResponse(response);
             }
 
-            const getUserByIdUseCase = new GetUserByIdUseCase();
-
-            const user = await getUserByIdUseCase.execute(userId);
+            const user = await this.getUserByIdUseCase.execute(userId);
 
             if(!user) {
                 return notFound(response, { message: 'User not found' });

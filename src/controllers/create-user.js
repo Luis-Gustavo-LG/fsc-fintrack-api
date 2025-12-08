@@ -14,6 +14,7 @@ import {
 export class CreateUserController {
     constructor() {
         this.execute = this.execute.bind(this);
+        this.createUserUseCase = new CreateUserUseCase();
     }   
     
     async execute(request, response) {
@@ -36,9 +37,7 @@ export class CreateUserController {
                 return InvalidEmailResponse(response);
             }
 
-            const createUserUseCase = new CreateUserUseCase();
-
-            const createdUser = await createUserUseCase.execute(createUserParams);
+            const createdUser = await this.createUserUseCase.execute(createUserParams);
 
             return created(response, createdUser);
 

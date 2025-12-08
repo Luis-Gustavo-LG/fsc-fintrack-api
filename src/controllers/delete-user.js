@@ -4,6 +4,7 @@ import { InvalidUserIdResponse, serverError, success, checkIfUserIdIsValid, notF
 export class DeleteUserController {
     constructor() {
         this.execute = this.execute.bind(this);
+        this.deleteUserUseCase = new DeleteUserUseCase();
     }
     
     async execute(request, response) {
@@ -18,9 +19,7 @@ export class DeleteUserController {
                 return InvalidUserIdResponse(response);
             }
 
-            const deleteUserUseCase = new DeleteUserUseCase();
-
-            const deletedUser = await deleteUserUseCase.execute(userId);
+            const deletedUser = await this.deleteUserUseCase.execute(userId);
 
             return success(response, deletedUser);
         } catch (error) {

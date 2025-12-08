@@ -5,12 +5,14 @@ import { PostgresGetUserByEmailRepository,
 } from "../repositories/postgres/index.js";
 
 export class UpdateUserUseCase {
+    constructor() {
+        this.postgresGetUserByEmailRepository = new PostgresGetUserByEmailRepository();
+        this.postgresUpdateUserRepository = new PostgresUpdateUserRepository();
+    }
     async execute(userId, updateUserParams) {
 
         if(updateUserParams.email) {
-            const postgresGetUserByEmailRepository = new PostgresGetUserByEmailRepository();
-
-            const user = await postgresGetUserByEmailRepository.execute(updateUserParams.email);
+            const user = await this.postgresGetUserByEmailRepository.execute(updateUserParams.email);
 
             if(user && user.id !== userId) {
                 throw new EmailAlreadyInUseError(updateUserParams.email);
@@ -26,8 +28,7 @@ export class UpdateUserUseCase {
             user.password = passwordHash;
         }
 
-        const postgresUpdateUserRepository = new PostgresUpdateUserRepository();
-        const updatedUser = await postgresUpdateUserRepository.execute(userId, user);
+        const updatedUser = await this.postgresUpdateUserRepository.execute(userId, user);
 
         return updatedUser;
     }
