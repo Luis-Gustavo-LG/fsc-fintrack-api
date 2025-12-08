@@ -1,14 +1,14 @@
 import bcrypt from "bcrypt";
 import { EmailAlreadyInUseError } from "../controllers/errors/user.js";
 export class CreateUserUseCase {
-    constructor(postgresCreateUserRepository, postgresGetUserByEmailRepository) {
-        this.postgresCreateUserRepository = postgresCreateUserRepository;
-        this.postgresGetUserByEmailRepository = postgresGetUserByEmailRepository;
+    constructor(createUserRepository, getUserByEmailRepository) {
+        this.createUserRepository = createUserRepository;
+        this.getUserByEmailRepository = getUserByEmailRepository;
     }   
     
     async execute(createUserParams) {
 
-        const userExists = await this.postgresGetUserByEmailRepository.execute(createUserParams.email);
+        const userExists = await this.getUserByEmailRepository.execute(createUserParams.email);
 
         if(userExists) {
             throw new EmailAlreadyInUseError(createUserParams.email);
@@ -21,7 +21,7 @@ export class CreateUserUseCase {
             password: passwordHash
         }
 
-        const createdUser = await this.postgresCreateUserRepository.execute(user);
+        const createdUser = await this.createUserRepository.execute(user);
 
         return createdUser;
     }

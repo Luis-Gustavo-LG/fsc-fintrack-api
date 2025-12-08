@@ -1,10 +1,10 @@
 export class GetUserByIdUseCase {
-    constructor(postgresGetUserByIdRepository){
-        this.postgresGetUserByIdRepository = postgresGetUserByIdRepository;
+    constructor(getUserByIdRepository){
+        this.getUserByIdRepository = getUserByIdRepository;
     }
 
     async execute(userId) {
-        const user = await this.postgresGetUserByIdRepository.execute(userId);
+        const user = await this.getUserByIdRepository.execute(userId);
 
         return user;
     }
