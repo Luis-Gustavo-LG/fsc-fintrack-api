@@ -5,17 +5,27 @@ import { CreateUserController,
     DeleteUserController 
 } from "../controllers/index.js";
 
-const router = Router();
+export class UserRoutes {
+    constructor() {
+        this.router = Router();
 
-const createUserController = new CreateUserController();
-const getUserByIdController = new GetUserByIdController();
-const updateUserController = new UpdateUserController();
-const deleteUserController = new DeleteUserController();
+        this.createUserController = new CreateUserController();
+        this.getUserByIdController = new GetUserByIdController();
+        this.updateUserController = new UpdateUserController();
+        this.deleteUserController = new DeleteUserController();
 
-router.post('/', createUserController.execute);
-router.get('/:id', getUserByIdController.execute);
-router.patch('/:id', updateUserController.execute);
-router.delete('/:id', deleteUserController.execute);
+        this.setupRoutes();
+    }
 
-export default router;
+    setupRoutes() {
+        this.router.post('/', this.createUserController.execute);
+        this.router.get('/:id', this.getUserByIdController.execute);
+        this.router.patch('/:id', this.updateUserController.execute);
+        this.router.delete('/:id', this.deleteUserController.execute);
+    }
+
+    getRouter() {
+        return this.router;
+    }
+}
 

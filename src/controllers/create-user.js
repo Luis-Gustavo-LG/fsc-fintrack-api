@@ -18,27 +18,27 @@ export class CreateUserController {
     
     async execute(request, response) {
         try {
-            const params = request.body;
+            const createUserParams = request.body;
 
             const requiredFields = ['firstName', 'lastName', 'email', 'password'];
 
             for (const field of requiredFields) {
-                if (!params[field] || params[field].trim().length === 0) {
+                if (!createUserParams[field] || createUserParams[field].trim().length === 0) {
                     return InvalidUserIdResponse(response);
                 }
             }
 
-            if(checkIfPasswordIsValid(params.password)) {
+            if(checkIfPasswordIsValid(createUserParams.password)) {
                 return InvalidPasswordResponse(response);
             }
 
-            if(checkIfEmailIsValid(params.email)) {
+            if(checkIfEmailIsValid(createUserParams.email)) {
                 return InvalidEmailResponse(response);
             }
 
             const createUserUseCase = new CreateUserUseCase();
 
-            const createdUser = await createUserUseCase.execute(params);
+            const createdUser = await createUserUseCase.execute(createUserParams);
 
             return created(response, createdUser);
 
