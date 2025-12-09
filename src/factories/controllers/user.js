@@ -16,7 +16,7 @@ import {
   CreateUserController,
   UpdateUserController,
   DeleteUserController,
-} from "../../controllers/index.js";
+} from "../../controllers/user/index.js";
 
 export const makeUserByIdController = () => {
   const getUserByIdRepository = new PostgresGetUserByIdRepository();
