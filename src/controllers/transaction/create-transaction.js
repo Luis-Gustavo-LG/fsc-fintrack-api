@@ -5,6 +5,8 @@ import {
     created, 
     serverError 
 } from "../helpers/index.js";
+import { UserNotFoundError } from "../errors/user.js";
+
 export class CreateTransactionController {
     constructor(useCase) {
         this.execute = this.execute.bind(this);
@@ -14,7 +16,7 @@ export class CreateTransactionController {
     async execute(request, response) {
         try {
             const createTransactionParams = request.body;
-            const userId = request.params.id;
+            const userId = request.params.userId;
             const amount = createTransactionParams.amount;
             const type = createTransactionParams.type.trim().toUpperCase();
 
@@ -38,10 +40,13 @@ export class CreateTransactionController {
                 return badRequest(response, { message: 'Amount must be greater than 0' });
             }
 
-            const amountInCents = Math.round(amount * 100);
+            const normalized = String(amount).replace(",", ".");
+
+            const amountInCents = Math.round(Number(normalized) * 100);
             const data = {
                 ...createTransactionParams,
-                amount: amountInCents
+                amount: amountInCents,
+                userId: userId
             };
 
             const typeIsValid = ['EARNING', 'EXPENSE', 'INVESTMENT'].includes(type);
@@ -50,7 +55,7 @@ export class CreateTransactionController {
                 return badRequest(response, { message: 'Invalid transaction type' });
             }
 
-            const createdTransaction = await this.useCase.execute(data, userId);
+            const createdTransaction = await this.useCase.execute(data);
 
             return created(response, createdTransaction);
 

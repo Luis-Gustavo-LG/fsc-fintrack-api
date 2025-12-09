@@ -33,6 +33,7 @@ model Transaction {
   type          TransactionType @default(EARNING)
   name          String
   amountInCents Int
+  description   String
   date          DateTime        @default(now())
   userId        String
   user          User            @relation(fields: [userId], references: [id])

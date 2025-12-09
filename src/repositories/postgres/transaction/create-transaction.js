@@ -8,7 +8,7 @@ export class PostgresCreateTransactionRepository {
             data: {
                 name: createTransactionParams.name,
                 type: createTransactionParams.type,
-                amountInCents: createTransactionParams.amountInCents,
+                amountInCents: createTransactionParams.amount,
                 description: createTransactionParams.description,
                 date: createTransactionParams.date,
                 userId: createTransactionParams.userId,
