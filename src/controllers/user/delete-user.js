@@ -1,8 +1,8 @@
 import {
-  InvalidUserIdResponse,
+  InvalidIdResponse,
   serverError,
   success,
-  checkIfUserIdIsValid,
+  checkIfIdIsValid,
   notFound,
 } from "../helpers/index.js";
 
@@ -17,11 +17,11 @@ export class DeleteUserController {
       const userId = request.params.id;
 
       if (!userId) {
-        return InvalidUserIdResponse(response);
+        return InvalidIdResponse(response);
       }
 
-      if (checkIfUserIdIsValid(userId)) {
-        return InvalidUserIdResponse(response);
+      if (checkIfIdIsValid(userId)) {
+        return InvalidIdResponse(response);
       }
 
       const deletedUser = await this.useCase.execute(userId);

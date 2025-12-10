@@ -2,7 +2,7 @@ import { EmailAlreadyInUseError } from "../errors/user.js";
 import { 
     InvalidEmailResponse, 
     EmailIsAlreadyInUseResponse, 
-    InvalidUserIdResponse, 
+    InvalidIdResponse, 
     InvalidPasswordResponse,
     checkIfPasswordIsValid,
     checkIfEmailIsValid,
@@ -24,7 +24,7 @@ export class CreateUserController {
 
             for (const field of requiredFields) {
                 if (!createUserParams[field] || createUserParams[field].trim().length === 0) {
-                    return InvalidUserIdResponse(response);
+                    return InvalidIdResponse(response);
                 }
             }
 

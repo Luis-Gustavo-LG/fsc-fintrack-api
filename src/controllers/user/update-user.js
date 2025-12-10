@@ -3,11 +3,11 @@ import { checkIfPasswordIsValid,
     checkIfEmailIsValid, 
     InvalidPasswordResponse, 
     InvalidEmailResponse, 
-    InvalidUserIdResponse,
+    InvalidIdResponse,
     success,
     serverError,
     badRequest,
-    checkIfUserIdIsValid
+    checkIfIdIsValid
 } from "../helpers/index.js";
 
 export class UpdateUserController {
@@ -22,11 +22,11 @@ export class UpdateUserController {
             const userId = request.params.id;
 
             if (!userId) {
-                return InvalidUserIdResponse(response);
+                return InvalidIdResponse(response);
             }
 
-            if(checkIfUserIdIsValid(userId)) {
-                return InvalidUserIdResponse(response);
+            if(checkIfIdIsValid(userId)) {
+                return InvalidIdResponse(response);
             }
 
             const allowedFields = ['firstName', 'lastName', 'email', 'password'];

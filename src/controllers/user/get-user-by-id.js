@@ -2,8 +2,8 @@ import {
   notFound,
   serverError,
   success,
-  InvalidUserIdResponse,
-  checkIfUserIdIsValid,
+  InvalidIdResponse,
+  checkIfIdIsValid,
 } from "../helpers/index.js";
 export class GetUserByIdController {
   constructor(useCase) {
@@ -16,11 +16,11 @@ export class GetUserByIdController {
       const userId = request.params.id;
 
       if (!userId) {
-        return InvalidUserIdResponse(response);
+        return InvalidIdResponse(response);
       }
 
-      if (checkIfUserIdIsValid(userId)) {
-        return InvalidUserIdResponse(response);
+      if (checkIfIdIsValid(userId)) {
+        return InvalidIdResponse(response);
       }
 
       const user = await this.useCase.execute(userId);

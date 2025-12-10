@@ -1,6 +1,6 @@
 import { 
     checkIfUserIdIsValid, 
-    InvalidUserIdResponse, 
+    InvalidIdResponse, 
     badRequest, 
     created, 
     serverError 
@@ -21,11 +21,11 @@ export class CreateTransactionController {
             const type = createTransactionParams.type.trim().toUpperCase();
 
             if (!userId) {
-                return InvalidUserIdResponse(response, { message: 'User ID is required' });
+                return InvalidIdResponse(response, { message: 'User ID is required' });
             }
 
             if(checkIfUserIdIsValid(userId)) {
-                return InvalidUserIdResponse(response, { message: 'Invalid user ID' });
+                return InvalidIdResponse(response, { message: 'Invalid user ID' });
             }
 
             const requiredFields = ['description', 'amount', 'type', 'date'];

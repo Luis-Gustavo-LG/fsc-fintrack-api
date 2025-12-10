@@ -13,12 +13,6 @@ export const EmailIsAlreadyInUseResponse = (response) => {
     return badRequest(response, { message: 'Email already in use' })
 }
 
-export const InvalidUserIdResponse = (response) => {
-    return badRequest(response, { message: 'Invalid Id' })
-}
-
 export const checkIfPasswordIsValid = (password) => password.length < 6;
 
 export const checkIfEmailIsValid = (email) => !validator.isEmail(email);
-
-export const checkIfUserIdIsValid = (userId) => !validator.isUUID(userId);
