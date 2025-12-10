@@ -1,9 +1,10 @@
 import { 
-    checkIfUserIdIsValid, 
+    checkIfIdIsValid, 
     InvalidIdResponse, 
     badRequest, 
     created, 
-    serverError 
+    serverError,
+    validateRequiredFields 
 } from "../helpers/index.js";
 import { UserNotFoundError } from "../errors/user.js";
 
@@ -18,23 +19,26 @@ export class CreateTransactionController {
             const createTransactionParams = request.body;
             const userId = request.params.userId;
             const amount = createTransactionParams.amount;
-            const type = createTransactionParams.type.trim().toUpperCase();
 
             if (!userId) {
                 return InvalidIdResponse(response, { message: 'User ID is required' });
             }
 
-            if(checkIfUserIdIsValid(userId)) {
+            if(checkIfIdIsValid(userId)) {
                 return InvalidIdResponse(response, { message: 'Invalid user ID' });
             }
 
-            const requiredFields = ['description', 'amount', 'type', 'date'];
+            const requiredFields = ['name', 'description', 'amount', 'type', 'date'];
 
-            for (const field of requiredFields) {
-                if (!createTransactionParams[field] || createTransactionParams[field].trim().length === 0) {
-                    return badRequest(response, { message: `The field ${field} is required` });
-                }
+            const validation = validateRequiredFields(createTransactionParams, requiredFields);
+
+            if(!validation.ok) {
+                return badRequest(response, { message: `The field ${validation.missingField} is required` });
             }
+
+            const type = createTransactionParams.type
+                ? createTransactionParams.type.trim().toUpperCase()
+                : undefined;
 
             if(amount <= 0) {
                 return badRequest(response, { message: 'Amount must be greater than 0' });

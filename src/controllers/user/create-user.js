@@ -6,8 +6,10 @@ import {
     InvalidPasswordResponse,
     checkIfPasswordIsValid,
     checkIfEmailIsValid,
+    badRequest,
     created,
-    serverError
+    serverError,
+    validateRequiredFields
 } from "../helpers/index.js";
 
 export class CreateUserController {
@@ -22,10 +24,10 @@ export class CreateUserController {
 
             const requiredFields = ['firstName', 'lastName', 'email', 'password'];
 
-            for (const field of requiredFields) {
-                if (!createUserParams[field] || createUserParams[field].trim().length === 0) {
-                    return InvalidIdResponse(response);
-                }
+            const validation = validateRequiredFields(createUserParams, requiredFields);
+
+            if(!validation.ok) {
+                return badRequest(response, { message: `The field ${validation.missingField} is required` });
             }
 
             if(checkIfPasswordIsValid(createUserParams.password)) {

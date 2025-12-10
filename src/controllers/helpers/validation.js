@@ -6,3 +6,32 @@ export const checkIfIdIsValid = (id) => !validator.isUUID(id);
 export const InvalidIdResponse = (response) => {
     return badRequest(response, { message: 'Invalid Id' })
 }
+
+export const validateRequiredFields = (params, requiredFields) => {
+    for (const field of requiredFields) {
+        const value = params[field];
+
+        if (value === undefined || value === null) {
+            return { ok: false, missingField: field };
+        }
+
+        if (typeof value === "string") {
+            if (validator.isEmpty(value, { ignore_whitespace: true })) {
+                return { ok: false, missingField: field };
+            }
+            continue;
+        }
+
+        if (typeof value === "number") {
+            if (isNaN(value)) {
+                return { ok: false, missingField: field };
+            }
+            continue;
+        }
+
+        return { ok: false, missingField: field };
+    }
+
+    return { ok: true, missingField: undefined };
+};
+
