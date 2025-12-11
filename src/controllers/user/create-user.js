@@ -9,7 +9,8 @@ import {
     badRequest,
     created,
     serverError,
-    validateRequiredFields
+    validateRequiredFields,
+    validateAllowedFields
 } from "../helpers/index.js";
 
 export class CreateUserController {
@@ -28,6 +29,12 @@ export class CreateUserController {
 
             if(!validation.ok) {
                 return badRequest(response, { message: `The field ${validation.missingField} is required` });
+            }
+
+            const allowedFields = validateAllowedFields(createUserParams, requiredFields)
+
+            if(!allowedFields.ok) {
+                return badRequest(response, { message: `The field ${allowedFields.invalidField} is not allowed` });
             }
 
             if(checkIfPasswordIsValid(createUserParams.password)) {

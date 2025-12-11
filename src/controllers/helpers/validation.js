@@ -35,3 +35,19 @@ export const validateRequiredFields = (params, requiredFields) => {
     return { ok: true, missingField: undefined };
 };
 
+export const validateAllowedFields = (params, allowedFields) => {
+    const receivedFields = Object.keys(params);
+
+    for (const field of receivedFields) {
+        if (!allowedFields.includes(field)) {
+            return {
+                ok: false,
+                invalidField: field
+            };
+        }
+    }
+
+    return { ok: true };
+};
+
+

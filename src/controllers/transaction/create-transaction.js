@@ -4,7 +4,10 @@ import {
     badRequest, 
     created, 
     serverError,
-    validateRequiredFields 
+    validateRequiredFields,
+    checkIfTypeIsValid,
+    amountToCents,
+    validateAllowedFields
 } from "../helpers/index.js";
 import { UserNotFoundError } from "../errors/user.js";
 
@@ -30,10 +33,16 @@ export class CreateTransactionController {
 
             const requiredFields = ['name', 'description', 'amount', 'type', 'date'];
 
-            const validation = validateRequiredFields(createTransactionParams, requiredFields);
+            const validationRequiredFields = validateRequiredFields(createTransactionParams, requiredFields);
 
-            if(!validation.ok) {
-                return badRequest(response, { message: `The field ${validation.missingField} is required` });
+            if(!validationRequiredFields.ok) {
+                return badRequest(response, { message: `The field ${validationRequiredFields.missingField} is required` });
+            }
+
+            const allowedFields = validateAllowedFields(createTransactionParams, requiredFields)
+
+            if(!allowedFields.ok) {
+                return badRequest(response, { message: `The field ${allowedFields.invalidField} is not allowed` });
             }
 
             const type = createTransactionParams.type
@@ -44,16 +53,15 @@ export class CreateTransactionController {
                 return badRequest(response, { message: 'Amount must be greater than 0' });
             }
 
-            const normalized = String(amount).replace(",", ".");
-
-            const amountInCents = Math.round(Number(normalized) * 100);
+            const amountInCents = amountToCents(amount);
+            
             const data = {
                 ...createTransactionParams,
                 amount: amountInCents,
                 userId: userId
             };
 
-            const typeIsValid = ['EARNING', 'EXPENSE', 'INVESTMENT'].includes(type);
+            const typeIsValid = checkIfTypeIsValid(type);
 
             if(!typeIsValid) {
                 return badRequest(response, { message: 'Invalid transaction type' });
