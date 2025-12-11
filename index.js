@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { UserRoutes } from "./src/routes/user.js";
-import { TransactionRoutes } from "./src/routes/transaction.js";
+import { UserRoutes, TransactionRoutes } from "./src/routes/index.js";
 
 dotenv.config();
 
