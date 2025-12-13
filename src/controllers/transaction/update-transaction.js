@@ -7,7 +7,8 @@ import {
     success, 
     badRequest,
     checkIfTypeIsValid,
-    amountToCents
+    amountToCents,
+    notFound
 } from "../helpers/index.js";
 
 export class UpdateTransactionController {
@@ -73,6 +74,9 @@ export class UpdateTransactionController {
 
             return success(response, updatedTransaction);
         } catch (error) {
+            if (error.code === "P2025") {
+                return notFound(response, { message: "Transaction not found" });
+            }
             return serverError(response, { message: error.message });
         }
     }
