@@ -57,13 +57,14 @@ export class UpdateTransactionController {
 
             if(upgradeTransactionParams.amount){
                 if (upgradeTransactionParams.amount !== undefined) {
-                    const amount = Number(upgradeTransactionParams.amount);
+                    const amount = upgradeTransactionParams.amount;
 
-                    if (Number.isNaN(amount) || amount <= 0) {
+                    upgradeTransactionParams.amountInCents = amountToCents(amount);
+
+                    if(amount <= 0) {
                         return badRequest(response, { message: 'Amount must be greater than 0' });
                     }
 
-                    upgradeTransactionParams.amountInCents = amountToCents(amount);
                     delete upgradeTransactionParams.amount;
                 }
             }
