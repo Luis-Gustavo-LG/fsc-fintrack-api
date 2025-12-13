@@ -7,7 +7,9 @@ import { checkIfPasswordIsValid,
     success,
     serverError,
     badRequest,
-    checkIfIdIsValid
+    checkIfIdIsValid,
+    validateAllowedFields,
+    validateSomeFieldIsBlank
 } from "../helpers/index.js";
 
 export class UpdateUserController {
@@ -31,24 +33,16 @@ export class UpdateUserController {
 
             const allowedFields = ['firstName', 'lastName', 'email', 'password'];
 
-            const someFieldIsNotAllowed = Object.keys(updateUserParams).some(
-                (field) => !allowedFields.includes(field)
-            )
+            const validationAllowedFields = validateAllowedFields(updateUserParams, allowedFields);
 
-            const someFieldIsBlank = Object.values(updateUserParams).some((value) => {
-                return (
-                    value === undefined ||
-                    value === null ||
-                    (typeof value === 'string' && value.trim().length === 0)
-                );
-            });
-
-            if(someFieldIsBlank) {
-                return badRequest(response, { message: 'Some provided fields are blank' });
+            if(!validationAllowedFields.ok) {
+                return badRequest(response, { message: `The field ${validationAllowedFields.invalidField} is not allowed` });
             }
 
-            if(someFieldIsNotAllowed) {
-                return badRequest(response, { message: 'Some provided fields are not allowed' });
+            const someFieldIsBlank = validateSomeFieldIsBlank(updateUserParams);
+
+            if(!someFieldIsBlank.ok) {
+                return badRequest(response, { message: `The field ${someFieldIsBlank.blankField} is blank` });
             }
 
             if(updateUserParams.password) {
