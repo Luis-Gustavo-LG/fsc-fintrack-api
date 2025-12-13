@@ -12,12 +12,13 @@ import {
 
 export class UpdateTransactionController {
     constructor(useCase) {
+        this.execute = this.execute.bind(this);
         this.useCase = useCase;
     }
     
     async execute(request, response) {
         try {
-            const upgradeTransactionParams = request.body;
+            let upgradeTransactionParams = { ...request.body };
             const transactionId = request.params.id;
 
             if (!transactionId) {
@@ -55,20 +56,16 @@ export class UpdateTransactionController {
             }
 
             if(upgradeTransactionParams.amount){
-                const amount = upgradeTransactionParams.amount;
+                if (upgradeTransactionParams.amount !== undefined) {
+                    const amount = Number(upgradeTransactionParams.amount);
 
-                if(amount <= 0) {
-                    return badRequest(response, { message: 'Amount must be greater than 0' });
+                    if (Number.isNaN(amount) || amount <= 0) {
+                        return badRequest(response, { message: 'Amount must be greater than 0' });
+                    }
+
+                    upgradeTransactionParams.amountInCents = amountToCents(amount);
+                    delete upgradeTransactionParams.amount;
                 }
-
-                const amountInCents = amountToCents(amount);
-
-                const data = {
-                    ...upgradeTransactionParams,
-                    amount: amountInCents,
-                }
-
-                upgradeTransactionParams = data;
             }
 
             const updatedTransaction = await this.useCase.execute(transactionId, upgradeTransactionParams);
