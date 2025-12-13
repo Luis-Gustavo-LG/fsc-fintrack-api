@@ -3,7 +3,8 @@ import {
     makeUserByIdController,
     makeCreateUserController,
     makeUpdateUserController,
-    makeDeleteUserController
+    makeDeleteUserController,
+    makeGetBalanceByUserIdController
  } from "../factories/controllers/user.js";
 export class UserRoutes {
     constructor() {
@@ -17,6 +18,7 @@ export class UserRoutes {
         this.router.get('/:id', makeUserByIdController().execute);
         this.router.patch('/:id', makeUpdateUserController().execute);
         this.router.delete('/:id', makeDeleteUserController().execute);
+        this.router.get('/:userId/balance', makeGetBalanceByUserIdController().execute);
     }
 
     getRouter() {

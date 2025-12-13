@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export class PostgresGetBalanceByUserIdRepository {
     async execute(userId){
-        const result = prisma.$queryRaw`
+        const result = await prisma.$queryRaw`
             SELECT *
             FROM user_balance
             WHERE "userId" = ${userId}
