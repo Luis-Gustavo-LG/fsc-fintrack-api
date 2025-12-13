@@ -2,14 +2,14 @@ import { UserNotFoundError } from "../errors/user.js";
 import { InvalidIdResponse, notFound, serverError, success, checkIfIdIsValid } from "../helpers/index.js";
 
 export class GetBalanceByUserIdController {
-    constructor(getBalanceByUserIdUseCase) {
+    constructor(useCase) {
         this.execute = this.execute.bind(this);
-        this.getBalanceByUserIdUseCase = getBalanceByUserIdUseCase;
+        this.useCase = useCase;
     }
 
     async execute(request, response) {
         try {
-            const userId = request.params.id;
+            const userId = request.params.userId;
 
             if (!userId) {
                 return InvalidIdResponse(response);
@@ -19,7 +19,7 @@ export class GetBalanceByUserIdController {
                 return InvalidIdResponse(response);
             }
 
-            const balance = await this.getBalanceByUserIdUseCase.execute(userId);
+            const balance = await this.useCase.execute(userId);
 
             if (!balance) {
                 return notFound(response, { message: "Balance not found" });
