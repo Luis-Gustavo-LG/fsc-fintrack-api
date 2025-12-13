@@ -50,7 +50,7 @@ export const validateAllowedFields = (params, allowedFields) => {
     return { ok: true };
 };
 
-export const validateSomeFieldIsBlank = (params) => {
+export const validateFieldIsFilled = (params) => {
     const receivedFields = Object.keys(params);
 
     for (const field of receivedFields) {

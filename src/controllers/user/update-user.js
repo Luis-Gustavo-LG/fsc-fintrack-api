@@ -9,7 +9,7 @@ import { checkIfPasswordIsValid,
     badRequest,
     checkIfIdIsValid,
     validateAllowedFields,
-    validateSomeFieldIsBlank
+    validateFieldIsFilled
 } from "../helpers/index.js";
 
 export class UpdateUserController {
@@ -39,10 +39,10 @@ export class UpdateUserController {
                 return badRequest(response, { message: `The field ${validationAllowedFields.invalidField} is not allowed` });
             }
 
-            const someFieldIsBlank = validateSomeFieldIsBlank(updateUserParams);
+            const fieldIsFilled = validateFieldIsFilled(updateUserParams);
 
-            if(!someFieldIsBlank.ok) {
-                return badRequest(response, { message: `The field ${someFieldIsBlank.blankField} is blank` });
+            if(!fieldIsFilled.ok) {
+                return badRequest(response, { message: `The field ${fieldIsFilled.blankField} is blank` });
             }
 
             if(updateUserParams.password) {
