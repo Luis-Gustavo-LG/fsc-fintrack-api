@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { makeCreateTransactionController, makeGetTransactionsByUserIdController } from "../factories/controllers/transaction.js";
+import { 
+    makeCreateTransactionController, 
+    makeGetTransactionsByUserIdController, 
+    makeDeleteTransactionController 
+} from "../factories/controllers/transaction.js";
 
 export class TransactionRoutes {
     constructor() {
@@ -10,6 +14,7 @@ export class TransactionRoutes {
     setupRoutes() {
         this.router.post('/:userId/transaction', makeCreateTransactionController().execute);
         this.router.get('/:userId/transaction', makeGetTransactionsByUserIdController().execute);
+        this.router.delete('/transaction/:id', makeDeleteTransactionController().execute);
     }
 
     getRouter() {

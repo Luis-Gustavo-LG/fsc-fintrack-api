@@ -1,8 +1,9 @@
 import { checkIfIdIsValid, InvalidIdResponse, serverError, success } from "../helpers/index.js";
 
 export class DeleteTransactionController {
-    constructor(deleteTransactionUseCase) {
-        this.deleteTransactionUseCase = deleteTransactionUseCase;
+    constructor(useCase) {
+        this.execute = this.execute.bind(this);
+        this.useCase = useCase;
     }
     
     async execute(request, response) {
@@ -13,7 +14,7 @@ export class DeleteTransactionController {
                 return InvalidIdResponse(response, { message: 'Invalid transaction ID' });
             }
 
-            const deletedTransaction = await this.deleteTransactionUseCase.execute(transactionId);
+            const deletedTransaction = await this.useCase.execute(transactionId);
 
             return success(response, deletedTransaction);
         } catch (error) {
