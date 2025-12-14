@@ -11,6 +11,8 @@ import { checkIfPasswordIsValid,
     validateAllowedFields,
     validateFieldIsFilled
 } from "../helpers/index.js";
+import { updateUserSchema } from "../schemas/user.js";
+import { ZodError } from "zod";
 
 export class UpdateUserController {
     constructor(useCase) {
@@ -31,31 +33,7 @@ export class UpdateUserController {
                 return InvalidIdResponse(response);
             }
 
-            const allowedFields = ['firstName', 'lastName', 'email', 'password'];
-
-            const validationAllowedFields = validateAllowedFields(updateUserParams, allowedFields);
-
-            if(!validationAllowedFields.ok) {
-                return badRequest(response, { message: `The field ${validationAllowedFields.invalidField} is not allowed` });
-            }
-
-            const fieldIsFilled = validateFieldIsFilled(updateUserParams);
-
-            if(!fieldIsFilled.ok) {
-                return badRequest(response, { message: `The field ${fieldIsFilled.blankField} is blank` });
-            }
-
-            if(updateUserParams.password) {
-                if(checkIfPasswordIsValid(updateUserParams.password)) {
-                    return InvalidPasswordResponse(response);
-                }
-            }
-
-            if(updateUserParams.email) {
-                if(checkIfEmailIsValid(updateUserParams.email)) {
-                    return InvalidEmailResponse(response);
-                }
-            }
+            await updateUserSchema.parseAsync(updateUserParams);
 
             const updatedUser = await this.useCase.execute(userId, updateUserParams);
 
@@ -63,6 +41,9 @@ export class UpdateUserController {
         } catch (error) {
             if(error instanceof EmailAlreadyInUseError) {
                 return EmailIsAlreadyInUseResponse(response);
+            }
+            if(error instanceof ZodError) {
+                return badRequest(response, { message: error.issues[0].message });
             }
             return serverError(response, { message: error.message });
         }
