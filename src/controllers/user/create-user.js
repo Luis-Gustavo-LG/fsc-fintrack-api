@@ -1,17 +1,12 @@
+import { ZodError } from "zod";
 import { EmailAlreadyInUseError } from "../errors/user.js";
 import { 
-    InvalidEmailResponse, 
     EmailIsAlreadyInUseResponse, 
-    InvalidIdResponse, 
-    InvalidPasswordResponse,
-    checkIfPasswordIsValid,
-    checkIfEmailIsValid,
     badRequest,
     created,
-    serverError,
-    validateRequiredFields,
-    validateAllowedFields
+    serverError
 } from "../helpers/index.js";
+import { createUserSchema } from "../schemas/user.js";
 
 export class CreateUserController {
     constructor(useCase) {
@@ -21,29 +16,10 @@ export class CreateUserController {
     
     async execute(request, response) {
         try {
+
             const createUserParams = request.body;
 
-            const requiredFields = ['firstName', 'lastName', 'email', 'password'];
-
-            const validation = validateRequiredFields(createUserParams, requiredFields);
-
-            if(!validation.ok) {
-                return badRequest(response, { message: `The field ${validation.missingField} is required` });
-            }
-
-            const allowedFields = validateAllowedFields(createUserParams, requiredFields)
-
-            if(!allowedFields.ok) {
-                return badRequest(response, { message: `The field ${allowedFields.invalidField} is not allowed` });
-            }
-
-            if(checkIfPasswordIsValid(createUserParams.password)) {
-                return InvalidPasswordResponse(response);
-            }
-
-            if(checkIfEmailIsValid(createUserParams.email)) {
-                return InvalidEmailResponse(response);
-            }
+            await createUserSchema.parseAsync(createUserParams);
 
             const createdUser = await this.useCase.execute(createUserParams);
 
@@ -52,6 +28,9 @@ export class CreateUserController {
         } catch (error) {
             if(error instanceof EmailAlreadyInUseError) {
                 return EmailIsAlreadyInUseResponse(response);
+            }
+            if(error instanceof ZodError) {
+                return badRequest(response, { message: error.issues[0].message });
             }
             return serverError(response, { message: error.message });
         }
