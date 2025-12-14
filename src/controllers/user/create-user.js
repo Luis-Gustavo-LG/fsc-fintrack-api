@@ -6,7 +6,7 @@ import {
     created,
     serverError
 } from "../helpers/index.js";
-import { createUserSchema } from "../schemas/user.js";
+import { createUserSchema } from "../schemas/index.js";
 
 export class CreateUserController {
     constructor(useCase) {

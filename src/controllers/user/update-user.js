@@ -11,7 +11,7 @@ import { checkIfPasswordIsValid,
     validateAllowedFields,
     validateFieldIsFilled
 } from "../helpers/index.js";
-import { updateUserSchema } from "../schemas/user.js";
+import { updateUserSchema } from "../schemas/index.js";
 import { ZodError } from "zod";
 
 export class UpdateUserController {
