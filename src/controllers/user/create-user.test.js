@@ -191,3 +191,29 @@ describe("Create user with less than 6 characters password", () => {
         expect(httpResponse.json).toHaveBeenCalledWith({ message: "Password must have at least 6 characters" });
     })
 })
+
+describe("Create user with blank firstName", () => {
+    it("should return a bad request error", async () => {
+        //arrange
+        const createUserUseCaseStub = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(createUserUseCaseStub);
+
+        const httpRequest = {
+            body: {
+                firstName: "       ",
+                lastName: "Doe",
+                email: "john.doe@example.com",
+                password: "123456",
+            }
+        };
+
+        const httpResponse = makeResponse();
+
+        //act
+        await createUserController.execute(httpRequest, httpResponse);
+
+        //assert      
+        expect(httpResponse.status).toHaveBeenCalledWith(400);
+        expect(httpResponse.json).toHaveBeenCalledWith({ message: "First name must have at least 2 characters" });
+    })
+})
