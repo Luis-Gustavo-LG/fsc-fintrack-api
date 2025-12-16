@@ -243,3 +243,30 @@ describe("Create user with blank lastName", () => {
         expect(httpResponse.json).toHaveBeenCalledWith({ message: "Last name must have at least 2 characters" });
     })
 })
+
+describe("Create user with a invalid field in request body", () => {
+    it("should return a bad request error", async () => {
+        //arrange
+        const createUserUseCaseStub = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(createUserUseCaseStub);
+
+        const httpRequest = {
+            body: {
+                firstName: "John",
+                lastName: "Doe",
+                email: "john.doe@example.com",
+                password: "123456",
+                invalidField: "invalidField",
+            }
+        };
+
+        const httpResponse = makeResponse();
+
+        //act
+        await createUserController.execute(httpRequest, httpResponse);
+
+        //assert      
+        expect(httpResponse.status).toHaveBeenCalledWith(400);
+        expect(httpResponse.json).toHaveBeenCalledWith({ message: "Some provided fields are not allowed: invalidField" });
+    })
+})
