@@ -1,4 +1,6 @@
-import { CreateUserController } from "./create-user.js"
+import { jest } from "@jest/globals";
+import { CreateUserController } from "./create-user.js";
+import { faker } from "@faker-js/faker";
 
 class CreateUserUseCaseStub {
     execute(user) {
@@ -22,10 +24,12 @@ describe("Create User Controller", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                password: "123456",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -48,9 +52,11 @@ describe("Create user without firstName", () => {
 
         const httpRequest = {
             body: {
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                password: "123456",
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -73,9 +79,11 @@ describe("Create user without lastName", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                email: "john.doe@example.com",
-                password: "123456",
+                firstName: faker.person.firstName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -98,9 +106,11 @@ describe("Create user without email", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
-                password: "123456",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -123,10 +133,12 @@ describe("Create user with invalid email", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
                 email: "john.example.com",
-                password: "123456",
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -149,9 +161,9 @@ describe("Create user without password", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
             }
         };
 
@@ -174,10 +186,12 @@ describe("Create user with less than 6 characters password", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                password: "12345",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 5,
+                }),
             }
         };
 
@@ -201,9 +215,11 @@ describe("Create user with blank firstName", () => {
         const httpRequest = {
             body: {
                 firstName: "       ",
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                password: "123456",
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -226,10 +242,12 @@ describe("Create user with blank lastName", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
+                firstName: faker.person.firstName(),
                 lastName: "       ",
-                email: "john.doe@example.com",
-                password: "123456",
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
@@ -252,10 +270,12 @@ describe("Create user with a invalid field in request body", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                password: "123456",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
                 invalidField: "invalidField",
             }
         };
@@ -279,10 +299,12 @@ describe("Verify if user is created with correct params", () => {
 
         const httpRequest = {
             body: {
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                password: "123456",
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
             }
         };
 
