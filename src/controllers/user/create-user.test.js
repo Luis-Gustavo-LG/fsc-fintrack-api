@@ -177,7 +177,7 @@ describe("Create user with less than 6 characters password", () => {
                 firstName: "John",
                 lastName: "Doe",
                 email: "john.doe@example.com",
-                password: "123",
+                password: "12345",
             }
         };
 
@@ -268,5 +268,32 @@ describe("Create user with a invalid field in request body", () => {
         //assert      
         expect(httpResponse.status).toHaveBeenCalledWith(400);
         expect(httpResponse.json).toHaveBeenCalledWith({ message: "Some provided fields are not allowed: invalidField" });
+    })
+})
+
+describe("Verify if user is created with correct params", () => {
+    it("should return a created response", async () => {
+        //arrange
+        const createUserUseCaseStub = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(createUserUseCaseStub);
+
+        const httpRequest = {
+            body: {
+                firstName: "John",
+                lastName: "Doe",
+                email: "john.doe@example.com",
+                password: "123456",
+            }
+        };
+
+        const httpResponse = makeResponse();
+
+        const executeSpy = jest.spyOn(createUserController, "execute");
+
+        //act
+        await createUserController.execute(httpRequest, httpResponse);
+
+        //assert      
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest, httpResponse);
     })
 })
