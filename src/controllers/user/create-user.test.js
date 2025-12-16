@@ -114,3 +114,29 @@ describe("Create user without email", () => {
         expect(httpResponse.json).toHaveBeenCalledWith({ message: "Invalid email" });
     })
 })
+
+describe("Create user with invalid email", () => {
+    it("should return a bad request error", async () => {
+        //arrange
+        const createUserUseCaseStub = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(createUserUseCaseStub);
+
+        const httpRequest = {
+            body: {
+                firstName: "John",
+                lastName: "Doe",
+                email: "john.example.com",
+                password: "123456",
+            }
+        };
+
+        const httpResponse = makeResponse();
+
+        //act
+        await createUserController.execute(httpRequest, httpResponse);
+
+        //assert      
+        expect(httpResponse.status).toHaveBeenCalledWith(400);
+        expect(httpResponse.json).toHaveBeenCalledWith({ message: "Invalid email" });
+    })
+})
