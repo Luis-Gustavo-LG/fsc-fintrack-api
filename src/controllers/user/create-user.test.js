@@ -319,3 +319,35 @@ describe("Verify if user is created with correct params", () => {
         expect(executeSpy).toHaveBeenCalledWith(httpRequest, httpResponse);
     })
 })
+
+describe("Verify if return 500 to CreateUserUseCase throws", () => {
+    it("should return a internal server error", async () => {
+        //arrange
+        const createUserUseCaseStub = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(createUserUseCaseStub);
+
+        const httpRequest = {
+            body: {
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
+            }
+        };
+
+        const httpResponse = makeResponse();
+
+        jest.spyOn(createUserUseCaseStub, "execute").mockImplementationOnce(() => {
+            throw new Error("Error");
+        })
+
+        //act
+        await createUserController.execute(httpRequest, httpResponse);
+
+        //assert      
+        expect(httpResponse.status).toHaveBeenCalledWith(500);
+        expect(httpResponse.json).toHaveBeenCalledWith({ message: "Error" });
+    })
+})
