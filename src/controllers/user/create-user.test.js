@@ -1,6 +1,7 @@
 import { jest } from "@jest/globals";
 import { CreateUserController } from "./create-user.js";
 import { faker } from "@faker-js/faker";
+import { EmailAlreadyInUseError } from "../errors/user.js";
 
 class CreateUserUseCaseStub {
     execute(user) {
@@ -349,5 +350,37 @@ describe("Verify if return 500 to CreateUserUseCase throws", () => {
         //assert      
         expect(httpResponse.status).toHaveBeenCalledWith(500);
         expect(httpResponse.json).toHaveBeenCalledWith({ message: "Error" });
+    })
+})
+
+describe("Verify Email already in use throw error in CreateUserUseCase", () => {
+    it("should return a bad request error", async () => {
+        //arrange
+        const createUserUseCaseStub = new CreateUserUseCaseStub();
+        const createUserController = new CreateUserController(createUserUseCaseStub);
+
+        const httpRequest = {
+            body: {
+                firstName: faker.person.firstName(),
+                lastName: faker.person.lastName(),
+                email: faker.internet.email(),
+                password: faker.internet.password({
+                    length: 6,
+                }),
+            }
+        };
+
+        const httpResponse = makeResponse();
+
+        jest.spyOn(createUserUseCaseStub, "execute").mockImplementationOnce(() => {
+            throw new EmailAlreadyInUseError(httpRequest.body.email);
+        })
+
+        //act
+        await createUserController.execute(httpRequest, httpResponse);
+
+        //assert      
+        expect(httpResponse.status).toHaveBeenCalledWith(400);
+        expect(httpResponse.json).toHaveBeenCalledWith({ message: 'Email already in use' });
     })
 })
