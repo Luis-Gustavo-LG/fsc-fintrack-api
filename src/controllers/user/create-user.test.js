@@ -16,12 +16,20 @@ const makeResponse = () => {
     return res;
 };
 
+const makeSut = () => {
+    const createUserUseCaseStub = new CreateUserUseCaseStub();
+    const createUserController = new CreateUserController(createUserUseCaseStub);
+    return {
+        createUserUseCaseStub,
+        createUserController
+    }
+}
+
 
 describe("Create User Controller", () => {
     it("should create a user", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -48,8 +56,7 @@ describe("Create User Controller", () => {
 describe("Create user without firstName", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -75,8 +82,7 @@ describe("Create user without firstName", () => {
 describe("Create user without lastName", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -102,8 +108,7 @@ describe("Create user without lastName", () => {
 describe("Create user without email", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -129,8 +134,7 @@ describe("Create user without email", () => {
 describe("Create user with invalid email", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -157,8 +161,7 @@ describe("Create user with invalid email", () => {
 describe("Create user without password", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -182,8 +185,7 @@ describe("Create user without password", () => {
 describe("Create user with less than 6 characters password", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -210,8 +212,7 @@ describe("Create user with less than 6 characters password", () => {
 describe("Create user with blank firstName", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -238,8 +239,7 @@ describe("Create user with blank firstName", () => {
 describe("Create user with blank lastName", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -266,8 +266,7 @@ describe("Create user with blank lastName", () => {
 describe("Create user with a invalid field in request body", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -295,8 +294,7 @@ describe("Create user with a invalid field in request body", () => {
 describe("Verify if user is created with correct params", () => {
     it("should return a created response", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -324,8 +322,7 @@ describe("Verify if user is created with correct params", () => {
 describe("Verify if return 500 to CreateUserUseCase throws", () => {
     it("should return a internal server error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserUseCaseStub, createUserController } = makeSut();
 
         const httpRequest = {
             body: {
@@ -356,8 +353,7 @@ describe("Verify if return 500 to CreateUserUseCase throws", () => {
 describe("Verify Email already in use throw error in CreateUserUseCase", () => {
     it("should return a bad request error", async () => {
         //arrange
-        const createUserUseCaseStub = new CreateUserUseCaseStub();
-        const createUserController = new CreateUserController(createUserUseCaseStub);
+        const { createUserUseCaseStub, createUserController } = makeSut();
 
         const httpRequest = {
             body: {
