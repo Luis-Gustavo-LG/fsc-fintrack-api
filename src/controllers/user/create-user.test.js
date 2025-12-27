@@ -16,6 +16,19 @@ const makeResponse = () => {
     return res;
 };
 
+const makeHttpRequest = () => {
+    return {
+        body: {
+            firstName: faker.person.firstName(),
+            lastName: faker.person.lastName(),
+            email: faker.internet.email(),
+            password: faker.internet.password({
+                length: 6,
+            }),
+        }
+    };
+};
+
 const makeSut = () => {
     const createUserUseCaseStub = new CreateUserUseCaseStub();
     const createUserController = new CreateUserController(createUserUseCaseStub);
@@ -31,16 +44,7 @@ describe("Create User Controller", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
 
         const httpResponse = makeResponse();
 
@@ -58,15 +62,8 @@ describe("Create user without firstName", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.firstName = undefined;
 
         const httpResponse = makeResponse();
 
@@ -84,15 +81,8 @@ describe("Create user without lastName", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.lastName = undefined;
 
         const httpResponse = makeResponse();
 
@@ -110,15 +100,8 @@ describe("Create user without email", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.email = undefined;
 
         const httpResponse = makeResponse();
 
@@ -136,16 +119,8 @@ describe("Create user with invalid email", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: "john.example.com",
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.email = "john.example.com";
 
         const httpResponse = makeResponse();
 
@@ -163,13 +138,8 @@ describe("Create user without password", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.password = undefined;
 
         const httpResponse = makeResponse();
 
@@ -187,16 +157,10 @@ describe("Create user with less than 6 characters password", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 5,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.password = faker.internet.password({
+            length: 5,
+        });
 
         const httpResponse = makeResponse();
 
@@ -214,16 +178,8 @@ describe("Create user with blank firstName", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: "       ",
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.firstName = "       ";
 
         const httpResponse = makeResponse();
 
@@ -241,16 +197,8 @@ describe("Create user with blank lastName", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: "       ",
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.lastName = "       ";
 
         const httpResponse = makeResponse();
 
@@ -268,17 +216,8 @@ describe("Create user with a invalid field in request body", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-                invalidField: "invalidField",
-            }
-        };
+        const httpRequest = makeHttpRequest();
+        httpRequest.body.invalidField = "invalidField";
 
         const httpResponse = makeResponse();
 
@@ -296,16 +235,7 @@ describe("Verify if user is created with correct params", () => {
         //arrange
         const { createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
 
         const httpResponse = makeResponse();
 
@@ -324,16 +254,7 @@ describe("Verify if return 500 to CreateUserUseCase throws", () => {
         //arrange
         const { createUserUseCaseStub, createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
 
         const httpResponse = makeResponse();
 
@@ -355,16 +276,7 @@ describe("Verify Email already in use throw error in CreateUserUseCase", () => {
         //arrange
         const { createUserUseCaseStub, createUserController } = makeSut();
 
-        const httpRequest = {
-            body: {
-                firstName: faker.person.firstName(),
-                lastName: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({
-                    length: 6,
-                }),
-            }
-        };
+        const httpRequest = makeHttpRequest();
 
         const httpResponse = makeResponse();
 
