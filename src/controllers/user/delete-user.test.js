@@ -49,4 +49,17 @@ describe("Delete User Controller", () => {
         //assert
         expect(httpResponse.status).toHaveBeenCalledWith(200);
     })
+
+    it("Should return 400 if id is invalid", async () => {
+        const { deleteUserController } = makeSut();
+
+        const httpResponse = makeResponse();
+        httpRequest.params.id = "invalid-id";
+
+        //act
+        await deleteUserController.execute(httpRequest, httpResponse);
+
+        //assert
+        expect(httpResponse.status).toHaveBeenCalledWith(400);
+    })
 })
