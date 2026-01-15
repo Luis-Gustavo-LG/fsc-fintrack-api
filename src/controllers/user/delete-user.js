@@ -2,7 +2,7 @@ import {
   InvalidIdResponse,
   serverError,
   success,
-  checkIfIdIsValid,
+  checkIfIdIsInvalid,
   notFound,
 } from "../helpers/index.js";
 
@@ -20,7 +20,7 @@ export class DeleteUserController {
         return InvalidIdResponse(response);
       }
 
-      if (checkIfIdIsValid(userId)) {
+      if (checkIfIdIsInvalid(userId)) {
         return InvalidIdResponse(response);
       }
 

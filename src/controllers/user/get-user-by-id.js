@@ -3,7 +3,7 @@ import {
   serverError,
   success,
   InvalidIdResponse,
-  checkIfIdIsValid,
+  checkIfIdIsInvalid,
 } from "../helpers/index.js";
 export class GetUserByIdController {
   constructor(useCase) {
@@ -19,7 +19,7 @@ export class GetUserByIdController {
         return InvalidIdResponse(response);
       }
 
-      if (checkIfIdIsValid(userId)) {
+      if (checkIfIdIsInvalid(userId)) {
         return InvalidIdResponse(response);
       }
 

@@ -1,5 +1,5 @@
 import { UserNotFoundError } from "../errors/user.js";
-import { InvalidIdResponse, notFound, serverError, success, checkIfIdIsValid } from "../helpers/index.js";
+import { InvalidIdResponse, notFound, serverError, success, checkIfIdIsInvalid } from "../helpers/index.js";
 
 export class GetBalanceByUserIdController {
     constructor(useCase) {
@@ -15,7 +15,7 @@ export class GetBalanceByUserIdController {
                 return InvalidIdResponse(response);
             }
 
-            if (checkIfIdIsValid(userId)) {
+            if (checkIfIdIsInvalid(userId)) {
                 return InvalidIdResponse(response);
             }
 

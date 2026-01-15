@@ -7,7 +7,7 @@ import { checkIfPasswordIsValid,
     success,
     serverError,
     badRequest,
-    checkIfIdIsValid,
+    checkIfIdIsInvalid,
     validateAllowedFields,
     validateFieldIsFilled
 } from "../helpers/index.js";
@@ -29,7 +29,7 @@ export class UpdateUserController {
                 return InvalidIdResponse(response);
             }
 
-            if(checkIfIdIsValid(userId)) {
+            if(checkIfIdIsInvalid(userId)) {
                 return InvalidIdResponse(response);
             }
 

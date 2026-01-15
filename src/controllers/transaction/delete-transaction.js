@@ -1,4 +1,4 @@
-import { checkIfIdIsValid, InvalidIdResponse, serverError, success, notFound } from "../helpers/index.js";
+import { checkIfIdIsInvalid, InvalidIdResponse, serverError, success, notFound } from "../helpers/index.js";
 
 export class DeleteTransactionController {
     constructor(useCase) {
@@ -10,7 +10,7 @@ export class DeleteTransactionController {
         try {
             const transactionId = request.params.id;
 
-            if(checkIfIdIsValid(transactionId)) {
+            if(checkIfIdIsInvalid(transactionId)) {
                 return InvalidIdResponse(response, { message: 'Invalid transaction ID' });
             }
 

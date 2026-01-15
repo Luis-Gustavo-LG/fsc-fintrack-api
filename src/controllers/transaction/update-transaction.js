@@ -1,6 +1,6 @@
 import { 
     InvalidIdResponse, 
-    checkIfIdIsValid, 
+    checkIfIdIsInvalid, 
     validateAllowedFields, 
     validateFieldIsFilled, 
     serverError, 
@@ -26,7 +26,7 @@ export class UpdateTransactionController {
                 return InvalidIdResponse(response);
             }
 
-            if(checkIfIdIsValid(transactionId)) {
+            if(checkIfIdIsInvalid(transactionId)) {
                 return InvalidIdResponse(response);
             }
 

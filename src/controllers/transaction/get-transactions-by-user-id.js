@@ -1,4 +1,4 @@
-import { InvalidIdResponse, notFound, serverError, checkIfIdIsValid, created } from "../helpers/index.js";
+import { InvalidIdResponse, notFound, serverError, checkIfIdIsInvalid, created } from "../helpers/index.js";
 import { UserNotFoundError } from "../errors/user.js";
 
 export class GetTransactionsByUserIdController {
@@ -15,7 +15,7 @@ export class GetTransactionsByUserIdController {
                 return InvalidIdResponse(response, { message: 'User ID is required' });
             }
 
-            if(checkIfIdIsValid(userId)) {
+            if(checkIfIdIsInvalid(userId)) {
                 return InvalidIdResponse(response, { message: 'Invalid user ID' });
             }
 
