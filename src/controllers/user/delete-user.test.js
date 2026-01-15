@@ -78,4 +78,19 @@ describe("Delete User Controller", () => {
         //assert
         expect(httpResponse.status).toHaveBeenCalledWith(404);
     })
+
+    it("Should return 500 if DeleteUserCase throws", async () => {
+        const { deleteUserController, deleteUserUseCaseStub } = makeSut();
+
+        const httpRequest = makeRequest();
+        const httpResponse = makeResponse();
+
+        deleteUserUseCaseStub.execute = jest.fn().mockRejectedValue(new Error());
+
+        //act
+        await deleteUserController.execute(httpRequest, httpResponse);
+
+        //assert
+        expect(httpResponse.status).toHaveBeenCalledWith(500);
+    })
 })
