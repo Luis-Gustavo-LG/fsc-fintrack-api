@@ -32,15 +32,14 @@ describe("Delete User Controller", () => {
         return res;
     };
 
-    const httpRequest = {
-        params: {
-            id: faker.string.uuid(),
-        }
-    };
+    const makeRequest = (id = faker.string.uuid()) => ({
+        params: { id }
+    });
 
     it("Should return 200 if user is deleted", async () => {
         const { deleteUserController } = makeSut();
 
+        const httpRequest = makeRequest();
         const httpResponse = makeResponse();
 
         //act
@@ -53,13 +52,30 @@ describe("Delete User Controller", () => {
     it("Should return 400 if id is invalid", async () => {
         const { deleteUserController } = makeSut();
 
+        const httpRequest = makeRequest("invalid-id");
         const httpResponse = makeResponse();
-        httpRequest.params.id = "invalid-id";
 
         //act
         await deleteUserController.execute(httpRequest, httpResponse);
 
         //assert
         expect(httpResponse.status).toHaveBeenCalledWith(400);
+    })
+
+    it("Should return 404 if user is not found", async () => {
+        const { deleteUserController, deleteUserUseCaseStub } = makeSut();
+
+        const httpRequest = makeRequest();
+        const httpResponse = makeResponse();
+
+        deleteUserUseCaseStub.execute = jest.fn().mockRejectedValue({
+            code: "P2025"
+        });
+
+        //act
+        await deleteUserController.execute(httpRequest, httpResponse);
+
+        //assert
+        expect(httpResponse.status).toHaveBeenCalledWith(404);
     })
 })
